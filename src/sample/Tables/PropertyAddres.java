@@ -45,6 +45,10 @@ public class PropertyAddres extends DataBaseTable{
         setAllFields();
     }
 
+    public PropertyAddres() {
+        super();
+    }
+
     public PropertyAddres(HashMap<String, String> propertyAddres) {
         super(propertyAddres);
     }

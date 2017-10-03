@@ -19,6 +19,10 @@ public abstract class DataBaseTable {
     protected String tableName;
     protected HashMap<String, Object> allFields;
 
+    public DataBaseTable() {
+        prepareTableName();
+    }
+
     public DataBaseTable(HashMap<String, String> obj) {
         prepareTableName();
         update(obj);

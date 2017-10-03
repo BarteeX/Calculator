@@ -61,4 +61,23 @@ public class DBConnection {
         return true;
     }
 
+    public List<String> getColumnNames(String columnName) {
+        List<String> columnNames = new ArrayList<>();
+        String query = SQLExpression.queryForColumnNames(columnName);
+        resultSet = null;
+        try {
+            System.out.println(query);
+            resultSet = statement.executeQuery(query);
+            if (resultSet != null) {
+                int i = 1;
+                while (resultSet.next()) {
+                    columnNames.add(resultSet.getMetaData().getCatalogName(i++));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return columnNames;
+    }
+
 }

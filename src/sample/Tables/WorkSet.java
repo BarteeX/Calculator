@@ -21,6 +21,10 @@ public class WorkSet extends DataBaseTable {
         setAllFields();
     }
 
+    public WorkSet() {
+        super();
+    }
+
     public WorkSet(HashMap<String, String> workSet) {
         super(workSet);
     }

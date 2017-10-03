@@ -84,6 +84,6 @@ public class ColumnNames {
     public static final String SQL_WORK_SET_ID_PK = "Work_set_id_pk";
     public static final String SQL_WORK_SET_IDN = "Work_set_idn";
     public static final String SQL_DEPITION = "Depition";
-    public static final String NEW_OBJECT = UUID.fromString("NEW").toString();
+    public static final String NEW_OBJECT = "NEW";
 
 }

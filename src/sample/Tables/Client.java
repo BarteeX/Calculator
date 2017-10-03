@@ -45,6 +45,11 @@ public class Client extends DataBaseTable {
         setAllFields();
     }
 
+    public Client() {
+        super();
+        setAllFields();
+    }
+
     public Client(HashMap<String, String> client) {
         super(client);
     }

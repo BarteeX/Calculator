@@ -8,8 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import sample.*;
-import sample.Tables.DataBaseTable;
-import sun.reflect.generics.tree.Tree;
+import sample.Tables.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,6 +16,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static sample.ColumnNames.NEW_OBJECT;
+import static sample.DBController.*;
 
 /**
  * Created by BarteeX on 2017-09-17.
@@ -280,25 +280,39 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
         }
     }
 
-    private void appendNewObjectToTree() {
-        TreeIdentifyItem item = (TreeIdentifyItem) getTreeItem();
-        
+    private void showNewItem(TreeIdentifyItem<String> itemToAdd) {
+        String tableName = itemToAdd.getTableName();
+
+        List<String> keysList = dbController.getColumnNamesFor(tableName);
+        GridPane grid = initGridPane();
+        int rowsAmount = (int) (Math.floor(keysList.size()) + 1);
+        int iter = rowsAmount;
+        for (String key : keysList) {
+            Label label = new Label(DBDictionary.getTranslate(key));
+            grid.add(label, 0, rowsAmount - iter);
+            TextFieldTyped textField = initTextField(key, null);
+            grid.add(textField, 1, rowsAmount - iter--);
+        }
+        anchor4fields.getChildren().clear();
+        anchor4fields.getChildren().add(grid);
+        tab.setText(DBDictionary.getTranslate(itemToAdd.getTableName()));
+        putMask(grid.getChildren(), true);
+
     }
 
+
     private void addNewRecord() {
-        //TODO : dorobić dodawanie nowych rekordów!
         TreeIdentifyItem<String> treeItem = (TreeIdentifyItem<String>) getTreeItem();
         String idn = treeItem.getIdn();
         if(idn.contains("add_")) {
             String tableName = idn.replaceFirst("add_", "");
-            TreeIdentifyItem<String> itemToAdd = new TreeIdentifyItem<String>(DBDictionary.getTranslate(tableName));
+            TreeIdentifyItem<String> itemToAdd = new TreeIdentifyItem<>(DBDictionary.getTranslate(tableName));
             itemToAdd.setTableName(tableName);
             itemToAdd.setIdn(NEW_OBJECT);
             int newId = IdController.addNewId(tableName);
-
+            // TODO: zprzygotowanie pustej mapy dla funkcji save object saveObject();
+            showNewItem(itemToAdd);
             treeItem.getChildren().add(itemToAdd);
-        } else  if (!treeItem.isLeaf()){
-
         }
     }
 

@@ -104,6 +104,10 @@ public class DBController {
         updateRecordInDataBase(obj);
     }
 
+    public List<String> getColumnNamesFor(String columnName) {
+        return connection.getColumnNames(columnName);
+    }
+
     public HashMap<String, List<DataBaseTable>> getAllTables(){
         return dbModel.getAllDB();
     }

@@ -68,7 +68,7 @@ public class SQLExpression {
         return query;
     }
 
-    public String getAllFrom(String tableName) {
+    public static String getAllFrom(String tableName) {
         switch (tableName) {
             case TABLE_CLIENT:
                 return ALL_CLIENTS;
@@ -87,5 +87,11 @@ public class SQLExpression {
             default:
                 return "";
         }
+    }
+
+    public static String queryForColumnNames(String table) {
+        return "SELECT *\n" +
+                "FROM Renovation.INFORMATION_SCHEMA.COLUMNS\n" +
+                "WHERE TABLE_NAME = N'" + table + "'";
     }
 }

@@ -36,6 +36,10 @@ public class Room extends DataBaseTable {
         setAllFields();
     }
 
+    public Room() {
+        super();
+    }
+
     public Room(HashMap<String, String> room) {
         super(room);
     }
