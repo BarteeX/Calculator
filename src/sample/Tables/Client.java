@@ -45,8 +45,8 @@ public class Client extends DataBaseTable {
         setAllFields();
     }
 
-    public Client() {
-        super();
+    public Client(String id) {
+        super(id);
         setAllFields();
     }
 

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static sample.ColumnNames.ID;
+import static sample.ColumnNames.IDN;
+
 /**
  * Created by BarteeX on 2017-08-24.
  */
@@ -71,7 +74,18 @@ public class DBConnection {
             if (resultSet != null) {
                 int i = 1;
                 while (resultSet.next()) {
-                    columnNames.add(resultSet.getMetaData().getCatalogName(i++));
+                    List<String> values = new ArrayList<>();
+                    for (int j = 1; ; j++) {
+                        try {
+                            String name = resultSet.getString(j);
+                            if (name.endsWith(ID)) name = ID;
+                            else if (name.endsWith(IDN)) name = IDN;
+                            values.add(name);
+                        } catch (Exception e) {
+                            break;
+                        }
+                    }
+                    columnNames.add(values.get(3));
                 }
             }
         } catch (SQLException e) {

@@ -41,8 +41,8 @@ public class Contact extends DataBaseTable {
         setAllFields();
     }
 
-    public Contact() {
-        super();
+    public Contact(String id) {
+        super(id);
     }
 
     public Contact(HashMap<String, String> contact) {

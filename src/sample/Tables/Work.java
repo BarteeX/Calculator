@@ -33,8 +33,8 @@ public class Work extends DataBaseTable {
         setAllFields();
     }
 
-    public Work() {
-        super();
+    public Work(String id) {
+        super(id);
     }
 
     public Work(HashMap<String, String> work) {

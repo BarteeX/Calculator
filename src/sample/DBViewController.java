@@ -39,7 +39,7 @@ public class DBViewController {
 
     private TreeIdentifyItem<String> makeConnection(DataBaseTable table, TreeIdentifyItem<String> root) {
         TreeIdentifyItem<String> item = new TreeIdentifyItem<>(table.getIdn());
-        item.setIdn(table.getIdn());
+        item.setId(table.getId());
         item.setTableName(table.getTableName());
         root.getChildren().add(item);
         return item;
@@ -55,12 +55,12 @@ public class DBViewController {
         List<DataBaseTable> works = tables.get(TABLE_WORK);
 
         TreeIdentifyItem<String> clientsRoot = new TreeIdentifyItem<>("Klienci:");
-        clientsRoot.setIdn("add_" + TABLE_CLIENT);
+        clientsRoot.setId("add_" + TABLE_CLIENT);
 
         clients.forEach((DataBaseTable client) -> {
             TreeIdentifyItem<String> clientItem = makeConnection(client, clientsRoot);
             TreeIdentifyItem<String> contactsRoot = new TreeIdentifyItem<>("Kontakty:");
-            contactsRoot.setIdn("add_" + TABLE_CONTACT);
+            contactsRoot.setId("add_" + TABLE_CONTACT);
             clientItem.getChildren().add(contactsRoot);
 
             String clientId = client.getId();
@@ -70,7 +70,7 @@ public class DBViewController {
                 }
             });
             TreeIdentifyItem<String> propertyRoot = new TreeIdentifyItem<>("Posiadłości:");
-            propertyRoot.setIdn("add_" + TABLE_PROPERTY);
+            propertyRoot.setId("add_" + TABLE_PROPERTY);
             clientItem.getChildren().add(propertyRoot);
             properties.forEach(property -> {
                 if(property.getAllFields().get(CLIENT_ID).equals(clientId)) {
@@ -78,7 +78,7 @@ public class DBViewController {
                     TreeIdentifyItem<String> propertyItem = makeConnection(property, propertyRoot);
                     TreeIdentifyItem<String> addressRoot = new TreeIdentifyItem<>("Adres:");
                     propertyItem.getChildren().add(addressRoot);
-                    addressRoot.setIdn("add_" + TABLE_ADDRESS);
+                    addressRoot.setId("add_" + TABLE_ADDRESS);
                     addresses.forEach(address -> {
                         if(address.getAllFields().get(PROPERTY_ID).equals(propertyId)) {
                             TreeIdentifyItem<String> addressItem = makeConnection(address, addressRoot);
@@ -86,7 +86,7 @@ public class DBViewController {
                     });
                     TreeIdentifyItem<String> roomsRoot = new TreeIdentifyItem<>("Pokoje");
                     propertyItem.getChildren().add(roomsRoot);
-                    roomsRoot.setIdn("add_"+ TABLE_ROOM);
+                    roomsRoot.setId("add_" + TABLE_ROOM);
                     rooms.forEach(room -> {
                         if(room.getAllFields().get(PROPERTY_ID).equals(propertyId)) {
                             TreeIdentifyItem<String> roomItem =  makeConnection(room, roomsRoot);

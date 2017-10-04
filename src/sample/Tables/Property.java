@@ -41,8 +41,8 @@ public class Property extends DataBaseTable {
         setAllFields();
     }
 
-    public Property() {
-        super();
+    public Property(String id) {
+        super(id);
     }
 
     public Property(HashMap<String,String> property) {

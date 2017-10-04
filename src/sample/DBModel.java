@@ -14,7 +14,7 @@ public class DBModel {
     private List<DataBaseTable> clientList;
     private List<DataBaseTable> contactList;
     private List<DataBaseTable> propertyList;
-    private List<DataBaseTable> propertyAddresList;
+    private List<DataBaseTable> propertyAddressList;
     private List<DataBaseTable> roomList;
     private List<DataBaseTable> workList;
     private List<DataBaseTable> workSetList;
@@ -28,7 +28,7 @@ public class DBModel {
         clientList = new ArrayList<>();
         contactList = new ArrayList<>();
         propertyList = new ArrayList<>();
-        propertyAddresList = new ArrayList<>();
+        propertyAddressList = new ArrayList<>();
         roomList = new ArrayList<>();
         workList = new ArrayList<>();
         workSetList = new ArrayList<>();
@@ -36,7 +36,7 @@ public class DBModel {
         allDB.put(TABLE_CLIENT, clientList);
         allDB.put(TABLE_CONTACT, contactList);
         allDB.put(TABLE_PROPERTY, propertyList);
-        allDB.put(TABLE_ADDRESS, propertyAddresList);
+        allDB.put(TABLE_ADDRESS, propertyAddressList);
         allDB.put(TABLE_ROOM, roomList);
         allDB.put(TABLE_WORK, workList);
         allDB.put(TABLE_WORK_SET, workSetList);
@@ -70,8 +70,8 @@ public class DBModel {
         return workSetList;
     }
 
-    public List<DataBaseTable> getPropertyAddresList() {
-        return propertyAddresList;
+    public List<DataBaseTable> getPropertyAddressList() {
+        return propertyAddressList;
     }
 
     public void setClientList(List<DataBaseTable> clientList) {
@@ -86,8 +86,8 @@ public class DBModel {
         this.propertyList = propertyList;
     }
 
-    public void setPropertyAddresList(List<DataBaseTable> propertyAddresList) {
-        this.propertyAddresList = propertyAddresList;
+    public void setPropertyAddressList(List<DataBaseTable> propertyAddressList) {
+        this.propertyAddressList = propertyAddressList;
     }
 
     public void setRoomList(List<DataBaseTable> roomList) {
@@ -171,7 +171,7 @@ public class DBModel {
 
     public void add(PropertyAddres propertyAddres) {
         if(propertyAddres != null) {
-            this.propertyAddresList.add(propertyAddres);
+            this.propertyAddressList.add(propertyAddres);
         }
     }
 

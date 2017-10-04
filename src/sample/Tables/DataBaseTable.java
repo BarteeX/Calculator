@@ -19,7 +19,8 @@ public abstract class DataBaseTable {
     protected String tableName;
     protected HashMap<String, Object> allFields;
 
-    public DataBaseTable() {
+    public DataBaseTable(String id) {
+        this.id = id;
         prepareTableName();
     }
 

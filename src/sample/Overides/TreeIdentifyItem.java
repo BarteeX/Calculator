@@ -7,7 +7,7 @@ import javafx.scene.control.TreeItem;
  */
 public class TreeIdentifyItem<T> extends TreeItem {
     private String tableName = null;
-    private String idn = null;
+    private String id = null;
 
     public TreeIdentifyItem(String name) {
         super(name);
@@ -21,11 +21,11 @@ public class TreeIdentifyItem<T> extends TreeItem {
         this.tableName = tableName;
     }
 
-    public String getIdn() {
-        return idn;
+    public String getId() {
+        return id;
     }
 
-    public void setIdn(String idn) {
-        this.idn = idn;
+    public void setId(String id) {
+        this.id = id;
     }
 }

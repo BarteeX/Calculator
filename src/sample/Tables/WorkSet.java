@@ -21,8 +21,8 @@ public class WorkSet extends DataBaseTable {
         setAllFields();
     }
 
-    public WorkSet() {
-        super();
+    public WorkSet(String id) {
+        super(id);
     }
 
     public WorkSet(HashMap<String, String> workSet) {

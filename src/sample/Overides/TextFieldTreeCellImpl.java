@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static sample.ColumnNames.NEW_OBJECT;
-import static sample.DBController.*;
 
 /**
  * Created by BarteeX on 2017-09-17.
@@ -87,7 +86,7 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
             setText(null);
             setGraphic(null);
         } else {
-            if(((TreeIdentifyItem)getTreeItem()).getIdn() != null && ((TreeIdentifyItem)getTreeItem()).getIdn().contains("add_")){
+            if (((TreeIdentifyItem) getTreeItem()).getId() != null && ((TreeIdentifyItem) getTreeItem()).getId().contains("add_")) {
                 showItem.setDisable(true);
                 editItem.setDisable(true);
                 addItem.setDisable(false);
@@ -122,6 +121,18 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
         }
     }
 
+    private int getNumberOfRowsInGrid(GridPane gridPane) {
+        Integer rows = 20;
+        try {
+            Method method = gridPane.getClass().getDeclaredMethod("getNumberOfRows");
+            method.setAccessible(true);
+            rows = (Integer) method.invoke(gridPane);
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return rows;
+    }
+
     public void editValues() {
         showItem();
 
@@ -132,19 +143,12 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
             putMask(children, false);
             if(!children.contains(saveButton)) {
                 initButton();
-                Integer rows = 20;
-                try {
-                    Method method = gridPane.getClass().getDeclaredMethod("getNumberOfRows");
-                    method.setAccessible(true);
-                    rows = (Integer) method.invoke(gridPane);
-                } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+                Integer rows = getNumberOfRowsInGrid(gridPane);
                 gridPane.add(saveButton, 0 , rows);
             }
         } else {
             System.err.println("Element wasn't abe to edit.");
-            System.err.println("IDN = " + ((TreeIdentifyItem)getTreeItem()).getIdn());
+            System.err.println("ID = " + ((TreeIdentifyItem) getTreeItem()).getId());
             System.err.println("TABLE NAME = " + ((TreeIdentifyItem)getTreeItem()).getTableName());
         }
     }
@@ -171,25 +175,27 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
         }
     }
 
+    private void onSaveButton() {
+        GridPane grid = (GridPane) anchor4fields.getChildren().get(0);
+        HashMap obj = new HashMap();
+        obj.put("table", ((TreeIdentifyItem) getTreeItem()).getTableName());
+        grid.getChildren().forEach(child -> {
+            if (child instanceof TextFieldTyped) {
+                obj.put(((TextFieldTyped) child).getPropName(), ((TextFieldTyped) child).getText());
+            } else if (child instanceof DatePickerTyped) {
+                obj.put(((DatePickerTyped) child).getPropName(), ((DatePickerTyped) child).getValue().toString());
+            } else if (child instanceof CheckBoxTyped) {
+                obj.put(((CheckBoxTyped) child).getPropName(), String.valueOf(((CheckBoxTyped) child).isSelected()));
+            }
+        });
+        saveObject(obj);
+        stopEditing();
+    }
+
     private void initButton() {
         saveButton = new Button();
         saveButton.setText("Zapisz");
-        saveButton.setOnAction(e -> {
-            GridPane grid = (GridPane) anchor4fields.getChildren().get(0);
-            HashMap obj = new HashMap();
-            obj.put("table", ((TreeIdentifyItem)getTreeItem()).getTableName());
-            grid.getChildren().forEach(child -> {
-                if(child instanceof TextFieldTyped) {
-                    obj.put(((TextFieldTyped) child).getPropName(), ((TextFieldTyped) child).getText());
-                } else if(child instanceof DatePickerTyped) {
-                    obj.put(((DatePickerTyped) child).getPropName(), ((DatePickerTyped) child).getValue().toString());
-                } else if(child instanceof CheckBoxTyped) {
-                    obj.put(((CheckBoxTyped) child).getPropName(), String.valueOf(((CheckBoxTyped)child).isSelected()));
-                }
-            });
-            saveObject(obj);
-            stopEditing();
-        });
+        saveButton.setOnAction(e -> onSaveButton());
     }
 
     private DatePickerTyped initDatePicker(String key, Object value) {
@@ -236,20 +242,24 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
 
     private List<String> prepareKeySet(HashMap<String, ?> elementMap) {
         List<String> keysList = new ArrayList<>();
-        elementMap.forEach((key, value) -> {
-            keysList.add(key);
-        });
-        Collections.sort(keysList);
+        if (elementMap != null) {
+            elementMap.forEach((key, value) -> {
+                keysList.add(key);
+            });
+            Collections.sort(keysList);
+        } else {
+            System.err.println("Key set wasn't prepared.");
+        }
         return keysList;
     }
 
     private void showItem() {
         TreeIdentifyItem treeItem = (TreeIdentifyItem) getTreeItem();
-        String idn = treeItem.getIdn();
+        String id = treeItem.getId();
         String tableName = treeItem.getTableName();
 
-        if(idn != null && tableName != null && !idn.isEmpty() && !tableName.isEmpty()) {
-            DataBaseTable elementToPrint = dbController.getById(tableName, idn);
+        if (id != null && tableName != null && !id.isEmpty() && !tableName.isEmpty()) {
+            DataBaseTable elementToPrint = dbController.getById(tableName, id);
             HashMap<String, ?> elementMap = elementToPrint.getAllFields();
             List<String> keysList = prepareKeySet(elementMap);
 
@@ -296,23 +306,34 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
         anchor4fields.getChildren().clear();
         anchor4fields.getChildren().add(grid);
         tab.setText(DBDictionary.getTranslate(itemToAdd.getTableName()));
-        putMask(grid.getChildren(), true);
-
+        putMask(grid.getChildren(), false);
+        if (!grid.getChildren().contains(saveButton)) {
+            initButton();
+            Integer rows = getNumberOfRowsInGrid(grid);
+            grid.add(saveButton, 0, rows);
+        }
     }
 
+    private int setNewId(String tableName) {
+        int newId = IdController.addNewId(tableName);
+        DataBaseTable empty = dbController.getEmpty(tableName, String.valueOf(newId));
+        dbController.get(tableName).add(empty);
+        return newId;
+    }
 
     private void addNewRecord() {
         TreeIdentifyItem<String> treeItem = (TreeIdentifyItem<String>) getTreeItem();
-        String idn = treeItem.getIdn();
-        if(idn.contains("add_")) {
-            String tableName = idn.replaceFirst("add_", "");
+        String id = treeItem.getId();
+        if (id.contains("add_")) {
+            String tableName = id.replaceFirst("add_", "");
             TreeIdentifyItem<String> itemToAdd = new TreeIdentifyItem<>(DBDictionary.getTranslate(tableName));
             itemToAdd.setTableName(tableName);
-            itemToAdd.setIdn(NEW_OBJECT);
-            int newId = IdController.addNewId(tableName);
-            // TODO: zprzygotowanie pustej mapy dla funkcji save object saveObject();
+            ((TreeIdentifyItem) getTreeItem()).setTableName(tableName);
+            int newId = setNewId(tableName);
+            itemToAdd.setId(newId + "");
             showNewItem(itemToAdd);
             treeItem.getChildren().add(itemToAdd);
+            onSaveButton();
         }
     }
 

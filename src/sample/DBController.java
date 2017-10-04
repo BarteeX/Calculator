@@ -1,6 +1,6 @@
 package sample;
 
-import sample.Tables.DataBaseTable;
+import sample.Tables.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public class DBController {
             case TABLE_PROPERTY:
                 return dbModel.getPropertyList();
             case TABLE_ADDRESS:
-                return dbModel.getPropertyAddresList();
+                return dbModel.getPropertyAddressList();
             case TABLE_ROOM:
                 return dbModel.getRoomList();
             case TABLE_CONTACT:
@@ -77,10 +77,31 @@ public class DBController {
         }
     }
 
-    public DataBaseTable getById(String tableName, String idn) {
+    public DataBaseTable getEmpty(String tableName, String id) {
+        switch (tableName) {
+            case TABLE_CLIENT:
+                return new Client(id);
+            case TABLE_PROPERTY:
+                return new Property(id);
+            case TABLE_ADDRESS:
+                return new PropertyAddres(id);
+            case TABLE_ROOM:
+                return new Room(id);
+            case TABLE_CONTACT:
+                return new Contact(id);
+            case TABLE_WORK:
+                return new Work(id);
+            case TABLE_WORK_SET:
+                return new WorkSet(id);
+            default:
+                return null;
+        }
+    }
+
+    public DataBaseTable getById(String tableName, String id) {
         List<DataBaseTable> toReturn = get(tableName);
         for(DataBaseTable table : toReturn) {
-            if(table.getIdn().equals(idn)){
+            if (table.getId().equals(id)) {
                 return table;
             }
         }
@@ -90,13 +111,18 @@ public class DBController {
     private void updateRecordInDataBase(HashMap<String, String> obj) {
         String tableName = obj.get("table");
         List<DataBaseTable> dataBaseTables = dbModel.getAllDB().get(tableName);
+        final Boolean[] updated = {false};
         dataBaseTables.forEach(table -> {
             if(table.getId().equals(obj.get(ID))) {
                 String query = SQLExpression.update(table);
                 System.out.println(query);
                 connection.update(query);
+                updated[0] = true;
             }
         });
+        if (!updated[0]) {
+            //dataBaseTables.add()
+        }
     }
 
     public void update(HashMap<String, String> obj) {
