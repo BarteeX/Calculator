@@ -52,6 +52,8 @@ public class SQLExpression {
                 sb.append("=");
                 if(value instanceof String || value instanceof LocalDate) {
                     value = "\'" + value +"\'";
+                } else if (value instanceof Boolean) {
+                    value = value.equals("true") ? 1 : 0;
                 }
                 sb.append(value.toString());
                 sb.append(",");
