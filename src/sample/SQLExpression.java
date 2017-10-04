@@ -70,6 +70,36 @@ public class SQLExpression {
         return query;
     }
 
+    public static String add(DataBaseTable table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ");
+        sb.append(table.getTableName());
+        HashMap<String, ?> allFields = table.getAllFields();
+        StringBuilder columns = new StringBuilder();
+        StringBuilder values = new StringBuilder();
+        columns.append(" (");
+        values.append(" (");
+        for (Map.Entry entry : allFields.entrySet()) {
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            if (value.equals(ID)) value = table.getTableName() + "_" + value;
+            else if (value.equals(IDN)) value = table.getTableName() + "_" + value;
+            columns.append(key);
+            columns.append(",");
+            values.append(value);
+            values.append(",");
+        }
+        columns.append(")");
+        values.append(");");
+        columns.deleteCharAt(columns.lastIndexOf(","));
+        values.deleteCharAt(values.lastIndexOf(","));
+        sb.append(columns);
+        sb.append("\n");
+        sb.append("VALUES ");
+        sb.append(values);
+        return sb.toString();
+    }
+
     public static String getAllFrom(String tableName) {
         switch (tableName) {
             case TABLE_CLIENT:

@@ -111,23 +111,31 @@ public class DBController {
     private void updateRecordInDataBase(HashMap<String, String> obj) {
         String tableName = obj.get("table");
         List<DataBaseTable> dataBaseTables = dbModel.getAllDB().get(tableName);
-        final Boolean[] updated = {false};
         dataBaseTables.forEach(table -> {
             if(table.getId().equals(obj.get(ID))) {
                 String query = SQLExpression.update(table);
                 System.out.println(query);
                 connection.update(query);
-                updated[0] = true;
             }
         });
-        if (!updated[0]) {
-            //dataBaseTables.add()
-        }
     }
 
     public void update(HashMap<String, String> obj) {
         dbModel.update(obj);
         updateRecordInDataBase(obj);
+    }
+
+    public void add(HashMap<String, String> obj) {
+        String tableName = obj.get("table");
+        List<DataBaseTable> dataBaseTables = dbModel.getAllDB().get(tableName);
+        dataBaseTables.forEach(table -> {
+            if (table.getId().equals(obj.get(ID))) {
+                String query = SQLExpression.add(table);
+                System.out.println(query);
+                connection.update(query);
+            }
+        });
+
     }
 
     public List<String> getColumnNamesFor(String columnName) {

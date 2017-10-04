@@ -153,8 +153,9 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
         }
     }
 
-    public void saveObject(HashMap obj) {
-        dbController.update(obj);
+    public void saveObject(HashMap obj, Boolean isNew) {
+        if (isNew) dbController.update(obj);
+        else dbController.add(obj);
     }
 
     public void stopEditing() {
@@ -175,7 +176,7 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
         }
     }
 
-    private void onSaveButton() {
+    private void onSaveButton(Boolean isNew) {
         GridPane grid = (GridPane) anchor4fields.getChildren().get(0);
         HashMap obj = new HashMap();
         obj.put("table", ((TreeIdentifyItem) getTreeItem()).getTableName());
@@ -188,14 +189,14 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
                 obj.put(((CheckBoxTyped) child).getPropName(), String.valueOf(((CheckBoxTyped) child).isSelected()));
             }
         });
-        saveObject(obj);
+        saveObject(obj, isNew);
         stopEditing();
     }
 
     private void initButton() {
         saveButton = new Button();
         saveButton.setText("Zapisz");
-        saveButton.setOnAction(e -> onSaveButton());
+        saveButton.setOnAction(e -> onSaveButton(false));
     }
 
     private DatePickerTyped initDatePicker(String key, Object value) {
@@ -333,7 +334,7 @@ public final class TextFieldTreeCellImpl extends TreeCell<String> {
             itemToAdd.setId(newId + "");
             showNewItem(itemToAdd);
             treeItem.getChildren().add(itemToAdd);
-            onSaveButton();
+            onSaveButton(true);
         }
     }
 
